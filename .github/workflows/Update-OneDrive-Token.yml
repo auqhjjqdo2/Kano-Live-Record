@@ -1,0 +1,27 @@
+name: Update-OneDrive-Token
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 12 * * *'
+jobs:
+  Update-OneDrive-Token:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 加载代码
+        uses: actions/checkout@main
+      - name: 设置时区
+        uses: szenius/set-timezone@master
+        with:
+          timezoneLinux: 'Asia/Shanghai'
+          timezoneMacos: 'Asia/Shanghai'
+          timezoneWindows: 'Asia/Shanghai'
+      - name: 环境搭建
+        run: pip3 install PyNaCl
+      - name: 更新onedrive_refresh_token
+        env:
+          REPO_NAME: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          ONEDRIVE_REFRESH_TOKEN: ${{ secrets.ONEDRIVE_REFRESH_TOKEN }}
+        run: python3 set_refresh_token.py

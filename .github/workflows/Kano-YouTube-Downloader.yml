@@ -1,0 +1,27 @@
+name: Kano-YouTube-Downloader
+on:
+  workflow_dispatch:
+jobs:
+  Kano-YouTube-Downloader:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@main
+      - name: 设置时区
+        uses: szenius/set-timezone@master
+        with:
+          timezoneLinux: 'Asia/Shanghai'
+          timezoneMacos: 'Asia/Shanghai'
+          timezoneWindows: 'Asia/Shanghai'
+      - name: 环境搭建
+        run: |
+          sudo snap install ffmpeg --channel=latest/edge
+          pip3 install youtube-dl
+          chmod 777 ./OneDriveUploader
+      - name: 运行脚本
+        env:
+          ONEDRIVE_REFRESH_TOKEN: ${{ secrets.ONEDRIVE_REFRESH_TOKEN }}
+          KANO_YOUTUBE_LINK: ${{ secrets.KANO_YOUTUBE_LINK }}
+        run: |
+          export PATH=/home/runner/.local/bin:$PATH
+          python3 kano_youtube_downloader.py
